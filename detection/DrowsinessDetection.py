@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 import tensorflow as tf
@@ -11,25 +10,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# In[2]:
 
 
 img_array = cv2.imread("Test_Dataset\Closed_Eyes\s0001_00001_0_0_0_0_0_01.png",cv2.IMREAD_GRAYSCALE)
 
 
-# In[3]:
 
 
 plt.imshow(img_array,cmap="gray")
 
 
-# In[4]:
-
 
 img_array.shape
 
 
-# In[5]:
 
 
 Datadirectory = "Test_Dataset/" ## training dataset
