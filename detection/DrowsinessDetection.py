@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-
-
 import tensorflow as tf
 import cv2
 import os
@@ -16,23 +11,11 @@ from tensorflow.keras import layers
 import winsound
 import numpy as np
 
-
-
-
-
 img_array = cv2.imread("Test_Dataset\Closed_Eyes\s0001_00001_0_0_0_0_0_01.png",cv2.IMREAD_GRAYSCALE)
-
-
-
 
 plt.imshow(img_array,cmap="gray")
 
-
-
 img_array.shape
-
-
-
 
 Datadirectory = "Test_Dataset/" ## training dataset
 Classes = ["Closed_Eyes","Open_Eyes"] ## list of classes
@@ -46,10 +29,6 @@ for category in Classes:
         break
     break
 
-
-# In[6]:
-
-
 img_size = 224 ## resizing the image from 86 x 86 to 224 X 224
 new_array = cv2.resize(backtorgb,(img_size,img_size))
 plt.imshow(new_array,cmap = "gray")
@@ -57,9 +36,6 @@ plt.show()
 
 
 # ## Reading all the images and converting them into an array for data and labels
-
-# In[7]:
-
 
 training_Data = []
 def create_training_Data():
@@ -76,26 +52,11 @@ def create_training_Data():
                 pass
 
 
-# In[8]:
-
-
 create_training_Data()
-
-
-# In[9]:
-
 
 print(len(training_Data)) ## displaying length of training_Data
 
-
-# In[10]:
-
-
 random.shuffle(training_Data)
-
-
-# In[11]:
-
 
 X = []
 y = []
@@ -104,29 +65,11 @@ for features,label in training_Data:
     y.append(label)
 X = np.array(X).reshape(-1, img_size, img_size, 3)
 
-
-# In[12]:
-
-
 X.shape
 
-
-# In[13]:
-
-
-# normalizing the data
 X = X/255.0; # we are normalizing it
 
-
-# In[14]:
-
-
 y = np.array(y)
-
-
-# In[15]:
-
-
 
 pickle_out = open("X_pickle","wb")
 pickle.dump(X,pickle_out)
@@ -136,247 +79,88 @@ pickle_out = open("y_pickle","wb")
 pickle.dump(y,pickle_out)
 pickle_out.close()
 
-
-# In[16]:
-
-
 pickle_in = open("X_pickle","rb")
 X = pickle.load(pickle_in)
 
 pickle_in = open("y_pickle","rb")
 y = pickle.load(pickle_in)
 
-
-# # deep learning model for training - Transfer Learning
-
-# In[17]:
-
-
-
-
-
-# In[18]:
-
-
 model = tf.keras.applications.mobilenet.MobileNet()
-
-
-# In[19]:
-
 
 model.summary()
 
-
-# # Transfer Learning
-
-# In[20]:
-
-
 base_input = model.layers[0].input ## input
 
-
-# In[21]:
-
-
 base_output = model.layers[-4].output ## output
-
-
-# In[22]:
-
 
 Flat_layer = layers.Flatten()(base_output)
 final_output = layers.Dense(1)(Flat_layer) ## one node (1/0)
 final_output = layers.Activation('sigmoid')(final_output)
-
-
-# In[23]:
-
-
 new_model = keras.Model(inputs = base_input,outputs = final_output)
-
-
-# In[24]:
-
 
 new_model.summary()
 
-
-# # settings for Binary Classification (open / closed)
-
-# In[25]:
-
-
 new_model.compile(loss = "binary_crossentropy",optimizer = "adam", metrics = ["accuracy"])
-
-
-# In[26]:
-
 
 new_model.fit(X,y,epochs = 1,validation_split = 0.1) ## training
 
-
-# In[27]:
-
-
 new_model.save('my_model.h5')
 
-
-# In[28]:
-
-
 new_model = tf.keras.models.load_model('my_model.h5')
-
-
-# # checking the network for predictions
-
-# In[29]:
-
 
 img_array = cv2.imread("Test_Dataset\Open_Eyes\s0001_01871_0_0_1_0_0_01.png",cv2.IMREAD_GRAYSCALE)
 backtorgb = cv2.cvtColor(img_array,cv2.COLOR_GRAY2RGB)
 new_array = cv2.resize(backtorgb,(img_size,img_size))
 
-
-# In[30]:
-
-
 X_input = np.array(new_array).reshape(1,img_size,img_size,3)
-
-
-# In[31]:
-
 
 X_input.shape
 
-
-# In[32]:
-
-
 plt.imshow(new_array)
-
-
-# In[33]:
-
 
 X_input = X_input/255.0
 
-
-# In[34]:
-
-
 prediction = new_model.predict(X_input)
 
-
-# In[35]:
-
-
 prediction
-
-
-# In[36]:
-
 
 img_array2 = cv2.imread("Test_Dataset\Closed_Eyes\s0001_00114_0_0_0_0_0_01.png",cv2.IMREAD_GRAYSCALE)
 backtorgb2 = cv2.cvtColor(img_array2,cv2.COLOR_GRAY2RGB)
 new_array2 = cv2.resize(backtorgb2,(img_size,img_size))
 
-
-# In[37]:
-
-
 X_input2 = np.array(new_array2).reshape(1,img_size,img_size,3)
-
-
-# In[38]:
-
 
 X_input2.shape
 
-
-# In[39]:
-
-
 plt.imshow(new_array2)
-
-
-# In[40]:
-
 
 X_input2 = X_input2/255.0
 prediction = new_model.predict(X_input2)
 prediction
 
-
-# # Lets check on Unknown Image
-
-# In[41]:
-
-
 img = cv2.imread("testimg.jpg")
-
-
-# In[42]:
-
 
 plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
 
-
-# In[43]:
-
-
 faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
-
-# In[44]:
-
 
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 
-
-# In[45]:
-
-
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-
-
-# In[46]:
-
 
 eyes = eye_cascade.detectMultiScale(gray,1.1,4)
 
-
-# In[47]:
-
-
 faces = faceCascade.detectMultiScale(img,1.1,5)
-
-
-# In[48]:
-
 
 for(x,y,w,h) in faces:
     cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
 
 plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
 
-
-# In[49]:
-
-
 for(x,y,w,h) in eyes:
     cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
 
-
-# In[50]:
-
-
 plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
-
-
-# # Cropping the eye image
-
-# In[51]:
-
 
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades +'haarcascade_eye.xml')
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -392,48 +176,25 @@ for x,y,w,h in eyes:
         for (ex,ey,ew,eh) in eyess:
             eyes_roi = roi_color[ey:ey+eh, ex:ex+ew]
 
-
-# In[52]:
-
-
 plt.imshow(cv2.cvtColor(eyes_roi,cv2.COLOR_BGR2RGB))
 
-
-# In[53]:
-
-
 eyes_roi.shape
-
-
-# In[54]:
-
 
 final_image = cv2.resize(eyes_roi,(224,224))
 final_image = np.expand_dims(final_image,axis=0) ##need fourth dimension
 final_image = final_image/255.0
 
-
-# In[55]:
-
-
 final_image.shape
-
-
-# In[56]:
-
 
 new_model.predict(final_image)
 
+'''
+Realtime Video Capture
 
-# # Realtime Video Capture
+Firstly to detect if eyes are closed or open
 
-# ## Firstly to detect if eyes are closed or open
-
-# ### if eyes are closed for unusual time
-
-# In[ ]:
-
-
+if eyes are closed for unusual time
+'''
 frequency = 2500 # Set Frequency to 2500 Hz
 duration = 1000 # Set duration to 1000 ms = 1 second
 cap = cv2.VideoCapture(0) # Setting default webcam for Video Capture
@@ -507,11 +268,6 @@ while True:
     cv2.imshow("My WebCam",frame)    
     if cv2.waitKey(1) & 0xFF==ord('q'):
         break
-
-
-# In[ ]:
-
-
 
 frequency = 2500 # Set Frequency to 2500 Hz
 duration = 1000 # Set duration to 1000 ms = 1 second
@@ -600,10 +356,3 @@ while True:
         
     cap.release()
     cv2.destroyAllWindows()
-
-
-# In[ ]:
-
-
-
-
