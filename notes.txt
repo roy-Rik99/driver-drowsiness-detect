@@ -1,0 +1,13 @@
+pip3 install --index-url https://google-coral.github.io/py-repo/ tflite_runtime
+pip3 install opencv-python
+pip3 install opencv-contrib-python
+
+1. Install Virtual Environment Library :-
+    sudo apt install python3-pip
+    pip3 install virtualenv
+2. Create a Virtual Environment :-
+    python3 -m virtualenv <Environment-name>
+3. Activate Virtual Environment :-
+    <Environment-name>/bin/activate
+4. Deactivate Virtual Environment :-
+    deactivate
