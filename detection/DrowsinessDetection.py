@@ -8,6 +8,14 @@ import cv2
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import random   ## shuffling data to avoid overfitting
+import pickle
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import winsound
+import numpy as np
+
 
 
 
@@ -83,7 +91,6 @@ print(len(training_Data)) ## displaying length of training_Data
 # In[10]:
 
 
-import random   ## shuffling data to avoid overfitting
 random.shuffle(training_Data)
 
 
@@ -120,7 +127,6 @@ y = np.array(y)
 # In[15]:
 
 
-import pickle
 
 pickle_out = open("X_pickle","wb")
 pickle.dump(X,pickle_out)
@@ -146,9 +152,7 @@ y = pickle.load(pickle_in)
 # In[17]:
 
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+
 
 
 # In[18]:
@@ -430,11 +434,8 @@ new_model.predict(final_image)
 # In[ ]:
 
 
-import winsound
 frequency = 2500 # Set Frequency to 2500 Hz
 duration = 1000 # Set duration to 1000 ms = 1 second
-import numpy as np
-import cv2
 cap = cv2.VideoCapture(0) # Setting default webcam for Video Capture
 cap.set(3,600)
 cap.set(4,400)
@@ -511,12 +512,10 @@ while True:
 # In[ ]:
 
 
-import winsound
+
 frequency = 2500 # Set Frequency to 2500 Hz
 duration = 1000 # Set duration to 1000 ms = 1 second
-import numpy as np
 # from deepface import DeepFace
-import cv2
 cap = cv2.VideoCapture(0) # Setting default webcam for Video Capture
 cap.set(3,400)
 cap.set(4,500)
